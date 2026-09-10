@@ -1,0 +1,52 @@
+<!-- NAV HEADER FIXO -->
+<header
+    class="fixed top-0 left-0 right-0 z-50 h-[64px] flex items-center bg-bg-base/90 backdrop-blur-md border-b border-border-subtle">
+    <div class="w-full max-w-[1120px] mx-auto px-5 flex items-center justify-between relative">
+
+        <!-- LOGO -->
+        <a href="index.html"
+            class="flex items-center gap-2.5 font-display font-bold text-lg text-text-primary hover:opacity-90 transition-opacity">
+            <span
+                class="w-8 h-8 rounded-[9px] flex items-center justify-center font-mono font-bold text-sm text-bg-base bg-gradient-to-br from-amber to-teal shadow-sm">MG</span>
+            MEUGOMES
+        </a>
+
+        <!-- MENU DE NAVEGAÇÃO -->
+        <nav id="nav-links"
+            class="nav-links hidden flex-col absolute top-[58px] left-4 right-4 md:static md:flex md:flex-row items-stretch md:items-center gap-2 md:gap-8 bg-bg-elevated/95 md:bg-transparent backdrop-blur-2xl md:backdrop-blur-none border border-border-subtle md:border-0 rounded-2xl md:rounded-none p-5 md:p-0 shadow-2xl md:shadow-none z-50">
+            <a href="index.html#apps"
+                class="text-base md:text-sm font-medium text-text-muted hover:text-text-primary hover:bg-white/5 md:hover:bg-transparent hover:translate-x-1 md:hover:translate-x-0 transition-all px-3 py-2.5 md:p-0 rounded-xl md:rounded-none border-b border-border-subtle/30 md:border-none">Apps</a>
+            <a href="index.html#sobre"
+                class="text-base md:text-sm font-medium text-text-muted hover:text-text-primary hover:bg-white/5 md:hover:bg-transparent hover:translate-x-1 md:hover:translate-x-0 transition-all px-3 py-2.5 md:p-0 rounded-xl md:rounded-none border-b border-border-subtle/30 md:border-none">Stack</a>
+            <a href="index.html#redes"
+                class="text-base md:text-sm font-medium text-text-muted hover:text-text-primary hover:bg-white/5 md:hover:bg-transparent hover:translate-x-1 md:hover:translate-x-0 transition-all px-3 py-2.5 md:p-0 rounded-xl md:rounded-none border-b border-border-subtle/30 md:border-none">Redes</a>
+            <a href="index.html#contacto"
+                class="text-base md:text-sm font-medium text-text-muted hover:text-text-primary hover:bg-white/5 md:hover:bg-transparent hover:translate-x-1 md:hover:translate-x-0 transition-all px-3 py-2.5 md:p-0 rounded-xl md:rounded-none">Contacto</a>
+
+            <a href="index.html#contacto"
+                class="sm:hidden mt-2 text-center px-4 py-2.5 rounded-xl bg-amber-soft border border-amber text-amber text-sm font-semibold active:scale-95 transition-all">
+                Pedir sistema
+            </a>
+        </nav>
+
+        <!-- BOTÃO HAMBÚRGUER & CTA -->
+        <div class="flex items-center gap-3">
+            <a href="index.html#contacto"
+                class="hidden sm:inline-flex px-4 py-2 rounded-full bg-amber-soft border border-amber text-amber text-sm font-semibold hover:bg-amber hover:text-bg-base active:scale-95 transition-all">
+                Pedir sistema
+            </a>
+
+            <button id="nav-toggle"
+                class="nav-toggle md:hidden p-2 rounded-xl text-text-primary hover:bg-white/10 active:scale-90 transition-all touch-manipulation cursor-pointer"
+                aria-label="Abrir menu" aria-expanded="false">
+                <svg class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                    stroke-linecap="round">
+                    <line x1="4" y1="6" x2="20" y2="6" class="line-top transition-all duration-300" />
+                    <line x1="4" y1="12" x2="20" y2="12" class="line-mid transition-all duration-300" />
+                    <line x1="4" y1="18" x2="20" y2="18" class="line-bot transition-all duration-300" />
+                </svg>
+            </button>
+        </div>
+
+    </div>
+</header>

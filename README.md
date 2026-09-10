@@ -1,87 +1,583 @@
-# Site de apps — MEUGOMES
+# MEUGOMES Apps
 
-Site mobile-first construído com HTML puro + **Tailwind CSS (CLI)**.
+Site oficial de apresentação dos aplicativos desenvolvidos pela **MEUGOMES**.
 
-## Estrutura
+O projeto foi desenvolvido com uma abordagem **mobile-first**, utilizando HTML semântico, Tailwind CSS e JavaScript puro. O objetivo é disponibilizar uma apresentação rápida, moderna e responsiva dos aplicativos, incluindo funcionalidades, capturas de ecrã, vídeos demonstrativos e links para download.
 
+---
+
+## 🚀 Tecnologias
+
+- **HTML5** — estrutura e conteúdo das páginas
+- **Tailwind CSS** — estilização e design responsivo
+- **Tailwind CSS CLI** — compilação e otimização do CSS
+- **JavaScript (Vanilla JS)** — interações e funcionalidades
+- **Node.js / npm** — gestão das dependências e scripts
+- **FormSubmit** — processamento do formulário de contacto
+
+---
+
+## 📁 Estrutura do projeto
+
+```text
+meugomes-apps/
+│
+├── index.html
+│   └── Página inicial e catálogo de aplicativos
+│
+├── app-gestor-financeiro.html
+│   └── Página de apresentação do Gestor Financeiro
+│
+├── app-exemplo.html
+│   └── Template para novos aplicativos
+│
+├── src/
+│   └── input.css
+│       └── Arquivo de entrada do Tailwind CSS
+│
+├── css/
+│   └── style.css
+│       └── CSS compilado pelo Tailwind
+│
+├── js/
+│   └── main.js
+│       └── Menu mobile, animações, vídeos e formulário
+│
+├── tailwind.config.js
+│   └── Configuração do Tailwind, cores, fontes e animações
+│
+├── package.json
+│   └── Dependências e scripts do projeto
+│
+└── README.md
+    └── Documentação do projeto
 ```
-index.html                    → página inicial
-app-gestor-financeiro.html    → página do 1º app (Gestor Financeiro)
-app-exemplo.html              → página do 2º app (placeholder — trocar nome/dados)
-src/input.css                 → ponto de entrada do Tailwind (fontes, ajustes finos)
-css/style.css                 → CSS final gerado (não editar à mão — é sobrescrito no build)
-tailwind.config.js            → paleta de cores, tipografia e animações personalizadas
-js/main.js                    → menu mobile, animações, vídeo lazy-load, envio do formulário
+
+> **Nota:** `css/style.css` é um arquivo gerado automaticamente. Evite editar este arquivo diretamente.
+
+---
+
+## 🧩 Adicionar um novo aplicativo
+
+Para adicionar um novo aplicativo ao site:
+
+### 1. Criar a página do aplicativo
+
+Use o template:
+
+```text
+app-exemplo.html
 ```
 
-Para adicionar um 3º app: copia `app-exemplo.html` para um novo ficheiro
-(ex: `app-nome-do-app.html`) e adiciona um novo card em `index.html`, dentro
-da secção `#apps`, a apontar para esse ficheiro. Como o Tailwind lê as classes
-diretamente dos `.html`, não precisas de tocar no CSS.
+Faça uma cópia e atribua um nome relacionado ao aplicativo:
 
-## Como trabalhar no projeto
+```text
+app-nome-do-app.html
+```
 
-Precisas de [Node.js](https://nodejs.org) instalado. Na primeira vez:
+Por exemplo:
+
+```text
+app-gestao-vendas.html
+```
+
+### 2. Atualizar as informações
+
+Substitua os dados do template:
+
+- Nome do aplicativo
+- Categoria
+- Descrição
+- Funcionalidades
+- Benefícios
+- Especificações
+- Screenshots
+- Vídeo demonstrativo
+- Links de download
+
+### 3. Adicionar o aplicativo à página inicial
+
+Abra:
+
+```text
+index.html
+```
+
+Localize a secção:
+
+```html
+<section id="apps">
+```
+
+Adicione um novo card apontando para a página criada:
+
+```html
+<a href="app-nome-do-app.html">
+    ...
+</a>
+```
+
+### 4. Recompilar o CSS
+
+Depois de adicionar ou alterar classes Tailwind:
+
+```bash
+npm run build:css
+```
+
+---
+
+## 🛠️ Desenvolvimento
+
+### Pré-requisitos
+
+Antes de começar, certifique-se de ter instalado:
+
+- [Node.js](https://nodejs.org/)
+- npm
+- VS Code ou outro editor de código
+
+### Instalação
+
+Clone o projeto e entre na pasta:
+
+```bash
+git clone URL_DO_REPOSITORIO
+cd meugomes-apps
+```
+
+Instale as dependências:
 
 ```bash
 npm install
 ```
 
-Sempre que editares o HTML e quiseres ver o CSS atualizado:
+---
+
+## 🎨 Desenvolvimento com Tailwind CSS
+
+### Build manual
+
+Para gerar o CSS otimizado:
 
 ```bash
-npm run build:css       # gera css/style.css uma vez (versão minificada, pronta para publicar)
-npm run watch:css       # mantém a gerar automaticamente enquanto editas
+npm run build:css
 ```
 
-Depois de correr `npm run watch:css`, basta abrir os `.html` diretamente no
-navegador (ou usar a extensão "Live Server" do VS Code) para veres as alterações.
+O comando gera:
 
-## O que precisas de substituir (procura por "TODO" nos ficheiros)
+```text
+css/style.css
+```
 
-1. **Vídeos do YouTube** — em cada página de app, no `data-youtube-id="..."`,
-   troca `COLOCAR_ID_DO_VIDEO` pelo ID do vídeo (a parte depois de `watch?v=`).
+### Modo de desenvolvimento
 
-2. **Links de download** — nos botões "Google Play" e "Baixar APK" (`href="#"`),
-   coloca o link real da Play Store e o link direto para o `.apk`.
+Durante o desenvolvimento, recomenda-se utilizar:
 
-3. **WhatsApp** — em `index.html`, no botão "Falar no WhatsApp", troca `244900000000`
-   pelo número real no formato internacional (código do país + número, sem "+" nem espaços).
+```bash
+npm run watch:css
+```
 
-4. **Redes sociais** — em `index.html`, secção `#redes`, troca os `href="#"` dos
-   ícones do Instagram/Facebook/LinkedIn/YouTube pelos links reais dos teus perfis.
-   Se não usares alguma rede, basta apagar esse `<a>`.
+O Tailwind ficará observando as alterações e recompilará o CSS automaticamente.
 
-5. **Capturas de ecrã** — as "telas" dos telemóveis usam cores/letras como placeholder.
-   Substitui o conteúdo pelo `<img src="...">` com screenshots reais do app.
+Em seguida, abra o projeto através do **Live Server do VS Code** ou de outro servidor local.
 
-6. **Nome e dados do 2º app** — em `app-exemplo.html` e no card correspondente em
-   `index.html`, substitui "Nome do App 2", categoria, descrição, funcionalidades
-   e especificações.
+---
 
-## Formulário de contacto → contacto.meugomes@gmail.com
+## 📱 Responsividade
 
-O formulário envia os dados via [FormSubmit.co](https://formsubmit.co) — um
-serviço gratuito que entrega diretamente no email, sem precisares de backend
-próprio nem conta paga.
+O projeto segue uma abordagem **mobile-first**.
 
-**Passo importante de ativação:** na primeira vez que alguém submeter o
-formulário depois do site estar publicado (com domínio real, não localmente),
-a FormSubmit vai mandar um email de confirmação para `contacto.meugomes@gmail.com`
-com um link "Activate Form". É preciso clicar nesse link uma única vez — a
-partir daí, todas as submissões seguintes chegam automaticamente à caixa de
-entrada, sem passos extra.
+O layout deve ser testado principalmente em:
 
-Se quiseres trocar o email de destino, basta editar o `action` do `<form>`
-em `index.html`:
+- 📱 Smartphones
+- 📲 Tablets
+- 💻 Notebooks
+- 🖥️ Desktops
+
+Recomenda-se utilizar as ferramentas de desenvolvimento do navegador para testar diferentes tamanhos de ecrã.
+
+---
+
+## 🔧 Configurações e personalização
+
+As principais configurações visuais estão em:
+
+```text
+tailwind.config.js
+```
+
+Neste arquivo podem ser configurados:
+
+- Paleta de cores
+- Tipografia
+- Breakpoints
+- Animações
+- Extensões do Tailwind
+
+Os estilos adicionais ou configurações específicas do projeto podem ser definidos em:
+
+```text
+src/input.css
+```
+
+---
+
+## 🎬 Vídeos dos aplicativos
+
+Cada página de aplicativo pode utilizar um vídeo demonstrativo do YouTube.
+
+Procure por:
+
 ```html
-<form id="contact-form" action="https://formsubmit.co/NOVO-EMAIL@exemplo.com" method="POST">
+data-youtube-id="COLOCAR_ID_DO_VIDEO"
 ```
 
-## Como publicar
+Substitua pelo ID real do vídeo.
 
-Depois de correres `npm run build:css`, o site fica pronto em ficheiros
-estáticos — `*.html`, `css/style.css` e `js/main.js`. Não precisas de enviar
-a pasta `node_modules` nem o `src/` para o servidor (mas não faz mal se enviares).
-Basta colocar a pasta num serviço como Netlify, Vercel, GitHub Pages ou o teu
-próprio hosting, e apontar o domínio `app.meugomes.it.ao` para lá.
+Por exemplo, para:
+
+```text
+https://www.youtube.com/watch?v=ABC123XYZ
+```
+
+utilize:
+
+```html
+data-youtube-id="ABC123XYZ"
+```
+
+---
+
+## 📸 Capturas de ecrã
+
+As telas dos aplicativos utilizadas atualmente como placeholder devem ser substituídas por capturas reais.
+
+Exemplo:
+
+```html
+<img
+    src="assets/screenshots/app-home.png"
+    alt="Tela inicial do aplicativo"
+>
+```
+
+Recomenda-se organizar as imagens em uma pasta própria:
+
+```text
+assets/
+└── screenshots/
+    ├── app-home.png
+    ├── app-dashboard.png
+    └── app-settings.png
+```
+
+Utilize sempre textos `alt` descritivos para melhorar a acessibilidade.
+
+---
+
+## 📲 Links dos aplicativos
+
+Antes da publicação, substitua todos os links provisórios:
+
+```html
+href="#"
+```
+
+pelos links reais.
+
+### Google Play
+
+```html
+href="LINK_DA_GOOGLE_PLAY"
+```
+
+### Download direto do APK
+
+```html
+href="LINK_DO_APK"
+```
+
+> Recomenda-se priorizar a distribuição através da Google Play sempre que o aplicativo estiver publicado oficialmente.
+
+---
+
+## 💬 Contacto via WhatsApp
+
+Na página inicial, localize o botão de contacto pelo WhatsApp.
+
+Substitua o número de exemplo:
+
+```text
+244900000000
+```
+
+pelo número oficial no formato internacional.
+
+Utilize:
+
+```text
+código do país + número
+```
+
+sem:
+
+- `+`
+- espaços
+- parênteses
+- hífens
+
+Exemplo de estrutura:
+
+```text
+244XXXXXXXXX
+```
+
+---
+
+## 📧 Formulário de contacto
+
+O formulário utiliza o **FormSubmit** para encaminhar as mensagens diretamente para:
+
+```text
+contacto.meugomes@gmail.com
+```
+
+Não é necessário manter um backend próprio apenas para processar este formulário.
+
+### Ativação inicial
+
+Após a publicação do site em um domínio real, a primeira submissão poderá exigir uma confirmação do endereço de email.
+
+A FormSubmit enviará uma mensagem de ativação para:
+
+```text
+contacto.meugomes@gmail.com
+```
+
+É necessário clicar no link de ativação uma única vez.
+
+Depois disso, os novos envios serão encaminhados normalmente.
+
+### Alterar o email de destino
+
+No `index.html`, altere o atributo `action`:
+
+```html
+<form
+    id="contact-form"
+    action="https://formsubmit.co/NOVO-EMAIL@exemplo.com"
+    method="POST"
+>
+```
+
+---
+
+## 🌐 Redes sociais
+
+Os links das redes sociais estão disponíveis na secção:
+
+```html
+<section id="redes">
+```
+
+Atualize os `href` dos respectivos perfis:
+
+- Instagram
+- Facebook
+- LinkedIn
+- YouTube
+
+Exemplo:
+
+```html
+<a href="LINK_DO_INSTAGRAM">
+```
+
+Caso uma determinada rede social não seja utilizada, o respetivo elemento pode ser removido.
+
+---
+
+## 🔍 Checklist antes da publicação
+
+Antes de colocar o site em produção, confirme:
+
+### Conteúdo
+
+- [ ] Nome dos aplicativos atualizado
+- [ ] Descrições revisadas
+- [ ] Funcionalidades atualizadas
+- [ ] Informações técnicas corretas
+- [ ] Screenshots reais adicionados
+- [ ] Vídeos configurados
+
+### Links
+
+- [ ] Google Play atualizado
+- [ ] APK atualizado, quando aplicável
+- [ ] WhatsApp configurado
+- [ ] Instagram configurado
+- [ ] Facebook configurado
+- [ ] LinkedIn configurado
+- [ ] YouTube configurado
+
+### Formulário
+
+- [ ] Email de destino correto
+- [ ] Formulário testado
+- [ ] FormSubmit ativado
+
+### Qualidade
+
+- [ ] Testado em smartphone
+- [ ] Testado em desktop
+- [ ] Links verificados
+- [ ] Imagens carregam corretamente
+- [ ] Não existem `TODO` pendentes
+- [ ] Não existem `href="#"` que deveriam ser links reais
+- [ ] CSS recompilado
+
+---
+
+## 📦 Build para produção
+
+Antes de publicar:
+
+```bash
+npm run build:css
+```
+
+O site final é composto principalmente por arquivos estáticos:
+
+```text
+*.html
+css/style.css
+js/main.js
+assets/
+```
+
+A pasta:
+
+```text
+node_modules/
+```
+
+não precisa ser enviada para o servidor.
+
+A pasta:
+
+```text
+src/
+```
+
+também não é necessária para o funcionamento do site publicado, embora seja recomendável mantê-la no repositório para facilitar futuras alterações e builds.
+
+---
+
+## 🚀 Publicação
+
+Por ser um site estático, pode ser publicado em serviços como:
+
+- Netlify
+- Vercel
+- GitHub Pages
+- Hosting tradicional
+
+Após a publicação, configure o domínio desejado, por exemplo:
+
+```text
+app.meugomes.it.ao
+```
+
+### Estrutura recomendada
+
+```text
+app.meugomes.it.ao
+        │
+        ├── Página inicial
+        │
+        ├── Aplicativos
+        │
+        ├── Informações
+        │
+        └── Downloads
+```
+
+---
+
+## 🔐 Boas práticas
+
+Não coloque no código-fonte:
+
+- Senhas
+- Tokens de API
+- Chaves privadas
+- Credenciais de serviços
+- Informações sensíveis
+
+Como o site é público, qualquer informação presente no HTML ou JavaScript pode ser visualizada pelo utilizador.
+
+---
+
+## 📌 Convenções de desenvolvimento
+
+Ao adicionar novos aplicativos, utilize nomes de arquivos simples e consistentes:
+
+```text
+app-gestor-financeiro.html
+app-gestao-vendas.html
+app-controlo-estoque.html
+app-agenda.html
+```
+
+Evite:
+
+```text
+App Novo.html
+pagina_final_2.html
+teste123.html
+```
+
+Prefira nomes em **minúsculas**, utilizando hífen para separar palavras.
+
+---
+
+## 🌱 Fluxo recomendado de trabalho
+
+```text
+1. Criar/editar página
+        ↓
+2. Atualizar conteúdo
+        ↓
+3. Adicionar imagens e links
+        ↓
+4. Executar npm run watch:css
+        ↓
+5. Testar no navegador
+        ↓
+6. Corrigir problemas
+        ↓
+7. Executar npm run build:css
+        ↓
+8. Fazer commit
+        ↓
+9. Publicar
+```
+
+---
+
+## 📄 Licença
+
+Este projeto é propriedade da **MEUGOMES**.
+
+O código, conteúdo, identidade visual, textos, imagens e materiais relacionados ao projeto não devem ser reutilizados ou redistribuídos sem autorização.
+
+---
+
+## 👨‍💻 MEUGOMES
+
+**MEUGOMES — Tecnologia, software e soluções digitais.**
+
+Site: `app.meugomes.it.ao`
+
+Contacto: `contacto.meugomes@gmail.com`
