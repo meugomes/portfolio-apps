@@ -1,12 +1,12 @@
 ﻿{
-  "version": "1.1.0",
-  "versionCode": 8,
+  "version": "1.2.0",
+  "versionCode": 9,
   "downloadUrl": "https://apps.meugomes.it.ao/downloads/meugestor-direct.apk",
-  "sha256": "2b57e3ce91a920360a8d4d1255c96b61a0777a239f50846f948fed6a7d3bede7",
+  "sha256": "95a20d5cfa79954e2a05032efc829e83afee9a5ee09e4bdaffcbdf680d2fd9a2",
   "mandatory": true,
-  "releaseDate": "2026-09-18",
+  "releaseDate": "2026-09-30",
   "releaseNotes": [
-    "Nota",
-    "\"Nota\""
+    "Atualização de segurança",
+    "Correção de bugs"
   ]
 }
