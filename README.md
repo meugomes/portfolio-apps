@@ -2,7 +2,7 @@
 
 Site oficial de apresentação dos aplicativos desenvolvidos pela **MEUGOMES**.
 
-O projeto foi desenvolvido com uma abordagem **mobile-first**, utilizando HTML semântico, Tailwind CSS e JavaScript puro. O objetivo é disponibilizar uma apresentação rápida, moderna e responsiva dos aplicativos, incluindo funcionalidades, capturas de ecrã, vídeos demonstrativos e links para download.
+O projeto foi desenvolvido com uma abordagem **mobile-first**, utilizando HTML semântico, Tailwind CSS e JavaScript puro. O objetivo é disponibilizar uma apresentação rápida, moderna e responsiva dos aplicativos criado na **MEUGOMES**, incluindo funcionalidades, capturas de ecrã, vídeos demonstrativos e links para download.
 
 ---
 
@@ -578,6 +578,6 @@ O código, conteúdo, identidade visual, textos, imagens e materiais relacionado
 
 **MEUGOMES — Tecnologia, software e soluções digitais.**
 
-Site: `app.meugomes.it.ao`
+Site: `apps.meugomes.it.ao`
 
 Contacto: `contacto.meugomes@gmail.com`
