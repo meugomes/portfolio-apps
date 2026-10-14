@@ -72,13 +72,64 @@ function closeMobileMenu(navLinks, toggleBtn) {
   }
 }
 
-// Carregamento dinâmico de componentes
-fetch('header.html')
-  .then(res => res.text())
+
+
+
+// Carregamento dinâmico do cabeçalho
+const isAppPage = window.location.pathname.includes('/app_page/');
+const headerPath = isAppPage ? '../header.html' : './header.html';
+
+fetch(headerPath)
+  .then(response => {
+    if (!response.ok) {
+      throw new Error(`Erro ao carregar header.html: ${response.status}`);
+    }
+    return response.text();
+  })
   .then(data => {
-    document.getElementById('header-container').innerHTML = data;
-    // Re-inicializa o JS do menu após carregar o HTML
+    const headerContainer = document.getElementById('header-container');
+
+    if (!headerContainer) {
+      console.error('Elemento #header-container não encontrado.');
+      return;
+    }
+
+    headerContainer.innerHTML = data;
+
+    // Caminho para o index.html principal
+    const currentUrl = new URL(window.location.href);
+    const pathParts = currentUrl.pathname.split('/');
+    const appPagePosition = pathParts.indexOf('app_page');
+
+    if (appPagePosition !== -1) {
+      pathParts.splice(appPagePosition);
+    } else {
+      pathParts.pop();
+    }
+
+    const rootPath = pathParts.join('/') + '/';
+    const indexUrl = `${currentUrl.origin}${rootPath}index.html`;
+
+    // Corrigir os links do cabeçalho
+    headerContainer.querySelectorAll('a').forEach(link => {
+      const href = link.getAttribute('href');
+
+      if (!href) return;
+
+      const match = href.match(/^(?:\.\.\/)?index\.html(?:#(.*))?$/);
+
+      if (match) {
+        link.href = match[1]
+          ? `${indexUrl}#${match[1]}`
+          : indexUrl;
+      }
+    });
+
+    // Re-inicializar o menu
     initNavMenu();
+  })
+  .catch(error => {
+    console.error('Erro no carregamento do cabeçalho:', error);
   });
 
   /* Reveal on scroll — troca opacity-0/translate-y-4 por opacity-100/translate-y-0 */

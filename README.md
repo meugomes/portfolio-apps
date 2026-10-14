@@ -122,7 +122,7 @@ Adicione um novo card apontando para a página criada:
 Depois de adicionar ou alterar classes Tailwind:
 
 ```bash
-npm run build:css
+npm.cmd run build:css
 ```
 
 ---
