@@ -1,0 +1,11 @@
+﻿{
+  "version": "1.0.1",
+  "versionCode": 1,
+  "downloadUrl": "https://apps.meugomes.it.ao/downloads/turma-primaria.apk",
+  "sha256": "84600a973d074c42467167043db7a0b58d5f3b7f6820c1a706d229de9aa8cfff",
+  "mandatory": true,
+  "releaseDate": "2026-10-16",
+  "releaseNotes": [
+    "Primeiro lançamento do app"
+  ]
+}
