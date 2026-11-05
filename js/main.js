@@ -70,34 +70,34 @@ fetch(headerPath)
     }
     return response.text();
   })
-  .then(data => {
-    const headerContainer = document.getElementById('header-container');
+  .then((data) => {
+    const headerContainer = document.getElementById("header-container");
 
     if (!headerContainer) {
-      console.error('Elemento #header-container não encontrado.');
+      console.error("Elemento #header-container não encontrado.");
       return;
     }
 
     headerContainer.innerHTML = data;
 
     // Corrigir automaticamente os caminhos das imagens do cabeçalho
-headerContainer.querySelectorAll('img').forEach(img => {
-    const src = img.getAttribute('src');
+    headerContainer.querySelectorAll("img").forEach((img) => {
+      const src = img.getAttribute("src");
 
-    if (!src) return;
+      if (!src) return;
 
-    // Caminho correcto conforme a localização da página
-    if (isAppPage) {
-        img.src = '../' + src.replace(/^(\.\.\/)+/, '').replace(/^\//, '');
-    } else {
-        img.src = src.replace(/^(\.\.\/)+/, '').replace(/^\//, '');
-    }
-});
+      // Caminho correcto conforme a localização da página
+      if (isAppPage) {
+        img.src = "../" + src.replace(/^(\.\.\/)+/, "").replace(/^\//, "");
+      } else {
+        img.src = src.replace(/^(\.\.\/)+/, "").replace(/^\//, "");
+      }
+    });
 
     // Caminho para o index.html principal
     const currentUrl = new URL(window.location.href);
-    const pathParts = currentUrl.pathname.split('/');
-    const appPagePosition = pathParts.indexOf('app_page');
+    const pathParts = currentUrl.pathname.split("/");
+    const appPagePosition = pathParts.indexOf("app_page");
 
     if (appPagePosition !== -1) {
       pathParts.splice(appPagePosition);
@@ -105,21 +105,19 @@ headerContainer.querySelectorAll('img').forEach(img => {
       pathParts.pop();
     }
 
-    const rootPath = pathParts.join('/') + '/';
+    const rootPath = pathParts.join("/") + "/";
     const indexUrl = `${currentUrl.origin}${rootPath}index.html`;
 
     // Corrigir os links do cabeçalho
-    headerContainer.querySelectorAll('a').forEach(link => {
-      const href = link.getAttribute('href');
+    headerContainer.querySelectorAll("a").forEach((link) => {
+      const href = link.getAttribute("href");
 
       if (!href) return;
 
       const match = href.match(/^(?:\.\.\/)?index\.html(?:#(.*))?$/);
 
       if (match) {
-        link.href = match[1]
-          ? `${indexUrl}#${match[1]}`
-          : indexUrl;
+        link.href = match[1] ? `${indexUrl}#${match[1]}` : indexUrl;
       }
     });
 
