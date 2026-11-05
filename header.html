@@ -1,52 +1,52 @@
-<!-- NAV HEADER FIXO -->
-<header
-    class="fixed top-0 left-0 right-0 z-50 h-[64px] flex items-center bg-bg-base/90 backdrop-blur-md border-b border-border-subtle">
-    <div class="w-full max-w-[1120px] mx-auto px-5 flex items-center justify-between relative">
+<!-- Cabeçalho MEUGOMES -->
+<header class="fixed top-0 inset-x-0 z-50 h-16 flex items-center bg-bg-base/90 backdrop-blur-xl border-b border-border-subtle shadow-card">
+  <div class="w-full max-w-[1120px] mx-auto px-5 flex items-center justify-between relative">
+    <a href="index.html" class="flex items-center gap-2.5 font-display font-bold text-lg text-text-primary hover:opacity-90 transition-opacity" aria-label="MEUGOMES — página inicial">
+      <span class="w-9 h-9 rounded-xl flex items-center justify-center font-mono font-bold text-sm text-white bg-gradient-to-br from-brand to-brand-deep shadow-brand-glow">MG</span>
+      <span>MEUGOMES</span>
+    </a>
 
-        <!-- LOGO -->
-        <a href="index.html"
-            class="flex items-center gap-2.5 font-display font-bold text-lg text-text-primary hover:opacity-90 transition-opacity">
-            <span
-                class="w-8 h-8 rounded-[9px] flex items-center justify-center font-mono font-bold text-sm text-bg-base bg-gradient-to-br from-amber to-teal shadow-sm">MG</span>
-            MEUGOMES
-        </a>
+    <!-- Fundo do menu mobile -->
+    <button id="nav-backdrop" type="button" aria-label="Fechar menu" tabindex="-1"
+      class="nav-backdrop fixed inset-0 top-16 bg-black/65 backdrop-blur-sm opacity-0 invisible pointer-events-none transition-all duration-300 md:hidden"></button>
 
-        <!-- MENU DE NAVEGAÇÃO -->
-        <nav id="nav-links"
-            class="nav-links hidden flex-col absolute top-[58px] left-4 right-4 md:static md:flex md:flex-row items-stretch md:items-center gap-2 md:gap-8 bg-bg-elevated/95 md:bg-transparent backdrop-blur-2xl md:backdrop-blur-none border border-border-subtle md:border-0 rounded-2xl md:rounded-none p-5 md:p-0 shadow-2xl md:shadow-none z-50">
-            <a href="index.html#apps" data-link="apps"
-                class="text-base md:text-sm font-medium text-text-muted hover:text-text-primary hover:bg-white/5 md:hover:bg-transparent hover:translate-x-1 md:hover:translate-x-0 transition-all px-3 py-2.5 md:p-0 rounded-xl md:rounded-none border-b border-border-subtle/30 md:border-none">Apps</a>
-            <a href="index.html#sobre" data-link="Stack"
-                class="text-base md:text-sm font-medium text-text-muted hover:text-text-primary hover:bg-white/5 md:hover:bg-transparent hover:translate-x-1 md:hover:translate-x-0 transition-all px-3 py-2.5 md:p-0 rounded-xl md:rounded-none border-b border-border-subtle/30 md:border-none">Stack</a>
-            <a href="index.html#redes" data-link="Redes"
-                class="text-base md:text-sm font-medium text-text-muted hover:text-text-primary hover:bg-white/5 md:hover:bg-transparent hover:translate-x-1 md:hover:translate-x-0 transition-all px-3 py-2.5 md:p-0 rounded-xl md:rounded-none border-b border-border-subtle/30 md:border-none">Redes</a>
-            <a href="index.html#contacto" data-link="contacto"
-                class="text-base md:text-sm font-medium text-text-muted hover:text-text-primary hover:bg-white/5 md:hover:bg-transparent hover:translate-x-1 md:hover:translate-x-0 transition-all px-3 py-2.5 md:p-0 rounded-xl md:rounded-none">Contacto</a>
+    <nav id="nav-links" class="nav-links flex flex-col md:flex-row items-stretch md:items-center gap-1 md:gap-8
+      fixed md:static top-[76px] left-3 right-3 md:inset-auto z-[60] md:z-auto
+      p-3 md:p-0 rounded-2xl md:rounded-none border border-border-subtle md:border-0
+      bg-bg-elevated/95 md:bg-transparent backdrop-blur-2xl md:backdrop-blur-none shadow-2xl md:shadow-none
+      opacity-0 invisible pointer-events-none -translate-y-3 md:opacity-100 md:visible md:pointer-events-auto md:translate-y-0
+      transition-all duration-300 ease-out">
+      <a href="index.html#apps" data-link="apps" class="nav-item">Aplicações</a>
+      <a href="index.html#sobre" data-link="Stack" class="nav-item">Tecnologias</a>
+      <a href="index.html#redes" data-link="Redes" class="nav-item">Redes</a>
+      <a href="index.html#contacto" data-link="contacto" class="nav-item">Contacto</a>
+      <a href="index.html#contacto" data-link="contacto" class="md:hidden mt-2 flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-brand text-white text-sm font-semibold shadow-brand-glow hover:bg-[#045fd6] transition-colors">
+        Pedir sistema <span aria-hidden="true">↗</span>
+      </a>
+    </nav>
 
-            <a href="index.html#contacto" data-link="contacto"
-                class="sm:hidden mt-2 text-center px-4 py-2.5 rounded-xl bg-amber-soft border border-amber text-amber text-sm font-semibold active:scale-95 transition-all">
-                Pedir sistema
-            </a>
-        </nav>
-
-        <!-- BOTÃO HAMBÚRGUER & CTA -->
-        <div class="flex items-center gap-3">
-            <a href="index.html#contacto" data-link="contacto"
-                class="hidden sm:inline-flex px-4 py-2 rounded-full bg-amber-soft border border-amber text-amber text-sm font-semibold hover:bg-amber hover:text-bg-base active:scale-95 transition-all">
-                Pedir sistema
-            </a>
-
-            <button id="nav-toggle"
-                class="nav-toggle md:hidden p-2 rounded-xl text-text-primary hover:bg-white/10 active:scale-90 transition-all touch-manipulation cursor-pointer"
-                aria-label="Abrir menu" aria-expanded="false">
-                <svg class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                    stroke-linecap="round">
-                    <line x1="4" y1="6" x2="20" y2="6" class="line-top transition-all duration-300" />
-                    <line x1="4" y1="12" x2="20" y2="12" class="line-mid transition-all duration-300" />
-                    <line x1="4" y1="18" x2="20" y2="18" class="line-bot transition-all duration-300" />
-                </svg>
-            </button>
-        </div>
-
+    <div class="flex items-center gap-3">
+      <a href="index.html#contacto" data-link="contacto" class="hidden md:inline-flex items-center gap-2 px-4 py-2.5 rounded-full bg-brand/15 border border-brand/40 text-brand text-sm font-semibold hover:bg-brand hover:text-white transition-all">Pedir sistema <span aria-hidden="true">↗</span></a>
+      <button id="nav-toggle" type="button" class="nav-toggle md:hidden relative z-[70] w-10 h-10 inline-flex items-center justify-center rounded-xl border border-border-subtle bg-bg-elevated text-text-primary hover:border-brand/60 active:scale-95 transition-all"
+        aria-label="Abrir menu" aria-expanded="false" aria-controls="nav-links">
+        <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true">
+          <path class="menu-line menu-line-top" d="M4 7h16" />
+          <path class="menu-line menu-line-middle" d="M4 12h16" />
+          <path class="menu-line menu-line-bottom" d="M4 17h16" />
+        </svg>
+      </button>
     </div>
+  </div>
 </header>
+<style>
+  .nav-item { display:flex; align-items:center; min-height:44px; padding:.7rem .9rem; border-radius:.8rem; color:#9AA9BA; font-size:.925rem; font-weight:500; transition:background .2s,color .2s,transform .2s; }
+  .nav-item:hover,.nav-item:focus-visible { color:#fff; background:rgba(5,108,242,.13); outline:none; }
+  @media (max-width:767px) { .nav-item { border-bottom:1px solid rgba(148,171,199,.10); } .nav-item:last-of-type { border-bottom:0; } }
+  .nav-backdrop.is-open { opacity:1; visibility:visible; pointer-events:auto; }
+  .nav-links.is-open { opacity:1; visibility:visible; pointer-events:auto; transform:translateY(0); }
+  .menu-line { transform-origin:center; transition:transform .25s ease,opacity .2s ease; }
+  .nav-toggle.is-open .menu-line-top { transform:translateY(5px) rotate(45deg); }
+  .nav-toggle.is-open .menu-line-middle { opacity:0; }
+  .nav-toggle.is-open .menu-line-bottom { transform:translateY(-5px) rotate(-45deg); }
+  @media (min-width:768px) { .nav-backdrop { display:none; } }
+</style>

@@ -4,76 +4,60 @@
 
 document.addEventListener('DOMContentLoaded', () => {
 
-  /* Menu mobile */
- document.addEventListener('click', (e) => {
-  const toggleBtn = e.target.closest('.nav-toggle');
-  const navLinks = document.querySelector('.nav-links');
-  const clickedLink = e.target.closest('a');
+  /* Menu mobile: painel flutuante, backdrop, acessibilidade e fecho automático. */
+  function initNavMenu() {
+    const toggle = document.getElementById('nav-toggle');
+    const nav = document.getElementById('nav-links');
+    const backdrop = document.getElementById('nav-backdrop');
+    if (!toggle || !nav || toggle.dataset.initialized === 'true') return;
+    toggle.dataset.initialized = 'true';
 
-  // 1. Alterna o Menu Hambúrguer / X
-  if (toggleBtn && navLinks) {
-    const isHidden = navLinks.classList.contains('hidden');
-    const lineTop = toggleBtn.querySelector('.line-top');
-    const lineMid = toggleBtn.querySelector('.line-mid');
-    const lineBot = toggleBtn.querySelector('.line-bot');
+    const openMenu = () => {
+      nav.classList.add('is-open');
+      backdrop?.classList.add('is-open');
+      toggle.classList.add('is-open');
+      toggle.setAttribute('aria-expanded', 'true');
+      toggle.setAttribute('aria-label', 'Fechar menu');
+      document.body.style.overflow = 'hidden';
+    };
+    const closeMenu = () => {
+      nav.classList.remove('is-open');
+      backdrop?.classList.remove('is-open');
+      toggle.classList.remove('is-open');
+      toggle.setAttribute('aria-expanded', 'false');
+      toggle.setAttribute('aria-label', 'Abrir menu');
+      document.body.style.overflow = '';
+    };
 
-    if (isHidden) {
-      navLinks.classList.remove('hidden');
-      navLinks.classList.add('flex');
-      toggleBtn.setAttribute('aria-expanded', 'true');
-
-      if (lineTop && lineMid && lineBot) {
-        lineTop.setAttribute('x1', '6'); lineTop.setAttribute('y1', '6');
-        lineTop.setAttribute('x2', '18'); lineTop.setAttribute('y2', '18');
-        lineMid.style.opacity = '0';
-        lineBot.setAttribute('x1', '6'); lineBot.setAttribute('y1', '18');
-        lineBot.setAttribute('x2', '18'); lineBot.setAttribute('y2', '6');
+    toggle.addEventListener('click', () => {
+      toggle.getAttribute('aria-expanded') === 'true' ? closeMenu() : openMenu();
+    });
+    backdrop?.addEventListener('click', closeMenu);
+    nav.querySelectorAll('a').forEach(link => link.addEventListener('click', closeMenu));
+    document.addEventListener('keydown', event => {
+      if (event.key === 'Escape' && toggle.getAttribute('aria-expanded') === 'true') {
+        closeMenu();
+        toggle.focus();
       }
-    } else {
-      closeMobileMenu(navLinks, toggleBtn);
+    });
+    window.addEventListener('resize', () => {
+      if (window.innerWidth >= 768) closeMenu();
+    });
+  }
+
+  document.addEventListener('click', event => {
+    const nav = document.getElementById('nav-links');
+    const toggle = document.getElementById('nav-toggle');
+    if (!nav || !toggle || toggle.getAttribute('aria-expanded') !== 'true') return;
+    if (!nav.contains(event.target) && !toggle.contains(event.target) && !event.target.closest('#nav-backdrop')) {
+      nav.classList.remove('is-open');
+      document.getElementById('nav-backdrop')?.classList.remove('is-open');
+      toggle.classList.remove('is-open');
+      toggle.setAttribute('aria-expanded', 'false');
+      toggle.setAttribute('aria-label', 'Abrir menu');
+      document.body.style.overflow = '';
     }
-    return;
-  }
-
-  // 2. Clique num Link (Fecha a gaveta mobile sem bloquear a navegação)
-  if (clickedLink && navLinks && !navLinks.classList.contains('hidden')) {
-    const btn = document.querySelector('.nav-toggle');
-    closeMobileMenu(navLinks, btn);
-    return;
-  }
-
-  // 3. Clique Fora do Menu
-  if (navLinks && !navLinks.classList.contains('hidden')) {
-    if (!navLinks.contains(e.target)) {
-      const btn = document.querySelector('.nav-toggle');
-      closeMobileMenu(navLinks, btn);
-    }
-  }
-});
-
-function closeMobileMenu(navLinks, toggleBtn) {
-  if (!navLinks) return;
-  navLinks.classList.add('hidden');
-  navLinks.classList.remove('flex');
-
-  if (toggleBtn) {
-    toggleBtn.setAttribute('aria-expanded', 'false');
-    const lineTop = toggleBtn.querySelector('.line-top');
-    const lineMid = toggleBtn.querySelector('.line-mid');
-    const lineBot = toggleBtn.querySelector('.line-bot');
-
-    if (lineTop && lineMid && lineBot) {
-      lineTop.setAttribute('x1', '4'); lineTop.setAttribute('y1', '6');
-      lineTop.setAttribute('x2', '20'); lineTop.setAttribute('y2', '6');
-      lineMid.style.opacity = '1';
-      lineBot.setAttribute('x1', '4'); lineBot.setAttribute('y1', '18');
-      lineBot.setAttribute('x2', '20'); lineBot.setAttribute('y2', '18');
-    }
-  }
-}
-
-
-
+  });
 
 // Carregamento dinâmico do cabeçalho
 const isAppPage = window.location.pathname.includes('/app_page/');
@@ -271,89 +255,99 @@ document.addEventListener('fullscreenchange', () => {
 });
 
 
- // Controlo do botão da Play Store + popup de testadores.
-  // Quando o app for publicado de verdade na Play Store:
-  //  1. muda PLAY_STORE_LIVE para true
-  //  2. coloca o link real em PLAY_STORE_URL
-  // A partir daí, o botão passa a abrir a Play Store diretamente e o popup deixa de aparecer.
-  const PLAY_STORE_LIVE = false;
-  const PLAY_STORE_URL = '#';
 
-  document.addEventListener('DOMContentLoaded', () => {
-    const playBtn = document.getElementById('play-store-btn');
-    const modal = document.getElementById('play-store-modal');
-    const closeBtn = document.getElementById('modal-close');
-    const testerForm = document.getElementById('tester-form');
-    const testerStatus = document.getElementById('tester-status');
+/* Botões Google Play e modal partilhado para testes fechados. */
+document.addEventListener('DOMContentLoaded', async () => {
+  const playButtons = [...document.querySelectorAll('.play-store-btn, #play-store-btn')];
+  if (!playButtons.length) return;
 
-    function openModal() {
-      modal.classList.remove('hidden');
-      modal.classList.add('flex');
-      document.body.style.overflow = 'hidden';
-      document.getElementById('tester-email').focus();
-    }
-    function closeModal() {
-      modal.classList.add('hidden');
-      modal.classList.remove('flex');
-      document.body.style.overflow = '';
-    }
+  const isAppPage = window.location.pathname.includes('/app_page/');
+  const modalPath = isAppPage ? 'play-store-modal.html' : 'app_page/play-store-modal.html';
+  try {
+    const response = await fetch(modalPath);
+    if (!response.ok) throw new Error(`Não foi possível carregar o modal (${response.status}).`);
+    const markup = await response.text();
+    document.body.insertAdjacentHTML('beforeend', markup);
+  } catch (error) {
+    console.error('Erro ao carregar o formulário de testadores:', error);
+    return;
+  }
 
-    if (playBtn) {
-      playBtn.addEventListener('click', () => {
-        if (PLAY_STORE_LIVE) {
-          window.open(PLAY_STORE_URL, '_blank', 'noopener');
-        } else {
-          openModal();
-        }
-      });
-    }
-    if (closeBtn) closeBtn.addEventListener('click', closeModal);
-    if (modal) {
-      modal.addEventListener('click', (e) => { if (e.target === modal) closeModal(); });
-    }
-    document.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape' && !modal.classList.contains('hidden')) closeModal();
+  const modal = document.getElementById('play-store-modal');
+  const closeButton = document.getElementById('modal-close');
+  const form = document.getElementById('tester-form');
+  const status = document.getElementById('tester-status');
+  const emailInput = document.getElementById('tester-email');
+  const whatsappInput = document.getElementById('tester-whatsapp');
+  const appInput = document.getElementById('tester-app-name');
+  const subjectInput = document.getElementById('tester-subject');
+  let lastTrigger = null;
+
+  const openModal = (trigger) => {
+    lastTrigger = trigger;
+    const appName = trigger.dataset.appName || document.title.replace(/· MEUGOMES/i, '').trim();
+    appInput.value = appName;
+    subjectInput.value = `Pedido de acesso ao teste fechado — ${appName}`;
+    modal.classList.remove('hidden');
+    modal.classList.add('flex');
+    document.body.style.overflow = 'hidden';
+    window.setTimeout(() => emailInput.focus(), 80);
+  };
+  const closeModal = () => {
+    modal.classList.add('hidden');
+    modal.classList.remove('flex');
+    document.body.style.overflow = '';
+    lastTrigger?.focus();
+  };
+
+  playButtons.forEach(button => {
+    button.addEventListener('click', () => {
+      const storeUrl = (button.dataset.playStoreUrl || '').trim();
+      const releaseStatus = (button.dataset.releaseStatus || 'testing').toLowerCase();
+      if (releaseStatus === 'live' && /^https:\/\//i.test(storeUrl)) {
+        window.open(storeUrl, '_blank', 'noopener,noreferrer');
+      } else {
+        openModal(button);
+      }
     });
-
-    if (testerForm) {
-      testerForm.addEventListener('submit', async (e) => {
-        e.preventDefault();
-        const submitBtn = testerForm.querySelector('button[type="submit"]');
-        const email = testerForm.querySelector('#tester-email').value.trim();
-        const whatsapp = testerForm.querySelector('#tester-whatsapp').value.trim();
-
-        if (!email || !whatsapp) {
-          testerStatus.textContent = 'Preenche o email e o WhatsApp, por favor.';
-          testerStatus.className = 'mt-3 text-sm text-danger';
-          return;
-        }
-
-        submitBtn.disabled = true;
-        submitBtn.textContent = 'A enviar...';
-
-        try {
-          const response = await fetch(testerForm.action, {
-            method: 'POST',
-            headers: { 'Accept': 'application/json' },
-            body: new FormData(testerForm),
-          });
-          if (response.ok) {
-            testerStatus.textContent = 'Recebido! Vais ser adicionado à lista de testadores em breve.';
-            testerStatus.className = 'mt-3 text-sm text-teal';
-            testerForm.reset();
-            setTimeout(closeModal, 2200);
-          } else {
-            throw new Error('Falha no envio');
-          }
-        } catch (err) {
-          testerStatus.textContent = 'Não foi possível enviar agora. Tenta novamente em instantes.';
-          testerStatus.className = 'mt-3 text-sm text-danger';
-        } finally {
-          submitBtn.disabled = false;
-          submitBtn.textContent = 'Quero ser testador';
-        }
-      });
-    }
   });
 
+  closeButton?.addEventListener('click', closeModal);
+  modal.addEventListener('click', event => { if (event.target === modal) closeModal(); });
+  document.addEventListener('keydown', event => {
+    if (event.key === 'Escape' && !modal.classList.contains('hidden')) closeModal();
+  });
 
+  form?.addEventListener('submit', async event => {
+    event.preventDefault();
+    status.textContent = '';
+    if (!emailInput.value.trim() || !emailInput.checkValidity() || !whatsappInput.value.trim()) {
+      status.textContent = 'Confirma o email Google e o número de WhatsApp.';
+      status.className = 'mt-3 min-h-5 text-center text-xs text-danger';
+      (!emailInput.value.trim() || !emailInput.checkValidity() ? emailInput : whatsappInput).focus();
+      return;
+    }
+
+    const submitButton = form.querySelector('button[type="submit"]');
+    submitButton.disabled = true;
+    submitButton.querySelector('span').textContent = 'A enviar pedido...';
+    try {
+      const result = await fetch(form.action, {
+        method: 'POST',
+        headers: { Accept: 'application/json' },
+        body: new FormData(form),
+      });
+      if (!result.ok) throw new Error('Falha ao enviar o formulário.');
+      status.textContent = 'Pedido recebido! Entraremos em contacto quando o acesso estiver disponível.';
+      status.className = 'mt-3 min-h-5 text-center text-xs text-[#65D6A3]';
+      form.reset();
+      window.setTimeout(closeModal, 2600);
+    } catch (error) {
+      status.textContent = 'Não foi possível enviar. Tenta novamente dentro de instantes.';
+      status.className = 'mt-3 min-h-5 text-center text-xs text-danger';
+    } finally {
+      submitButton.disabled = false;
+      submitButton.querySelector('span').textContent = 'Solicitar acesso ao teste';
+    }
+  });
+});
