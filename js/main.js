@@ -80,6 +80,20 @@ fetch(headerPath)
 
     headerContainer.innerHTML = data;
 
+    // Corrigir automaticamente os caminhos das imagens do cabeçalho
+headerContainer.querySelectorAll('img').forEach(img => {
+    const src = img.getAttribute('src');
+
+    if (!src) return;
+
+    // Caminho correcto conforme a localização da página
+    if (isAppPage) {
+        img.src = '../' + src.replace(/^(\.\.\/)+/, '').replace(/^\//, '');
+    } else {
+        img.src = src.replace(/^(\.\.\/)+/, '').replace(/^\//, '');
+    }
+});
+
     // Caminho para o index.html principal
     const currentUrl = new URL(window.location.href);
     const pathParts = currentUrl.pathname.split('/');
@@ -115,6 +129,8 @@ fetch(headerPath)
   .catch(error => {
     console.error('Erro no carregamento do cabeçalho:', error);
   });
+
+ 
 
   /* Reveal on scroll — troca opacity-0/translate-y-4 por opacity-100/translate-y-0 */
   const revealEls = document.querySelectorAll('.reveal');
