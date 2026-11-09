@@ -2,6 +2,10 @@
 // MEUGOMES · App Showcase — interações
 // ==========================================================================
 
+// Substituir pelo Measurement ID real do GA4 (formato G-XXXXXXXXXX).
+// Enquanto permanecer como placeholder, nenhuma ligação ao Google Analytics será iniciada.
+const MEUGOMES_GA4_ID = 'G-D6KH081EY8';
+
 document.addEventListener('DOMContentLoaded', () => {
 
   /* Menu mobile: painel flutuante, backdrop, acessibilidade e fecho automático. */
@@ -62,25 +66,19 @@ document.addEventListener('DOMContentLoaded', () => {
 // Carregamento dinâmico do cabeçalho
 const isAppPage = window.location.pathname.includes('/app_page/');
 const headerPath = isAppPage ? '../header.html' : './header.html';
+const headerContainer = document.getElementById('header-container');
 
-fetch(headerPath)
+if (headerContainer) fetch(headerPath)
   .then(response => {
     if (!response.ok) {
       throw new Error(`Erro ao carregar header.html: ${response.status}`);
     }
     return response.text();
   })
-  .then((data) => {
-    const headerContainer = document.getElementById("header-container");
-
-    if (!headerContainer) {
-      console.error("Elemento #header-container não encontrado.");
-      return;
-    }
-
+  .then(data => {
     headerContainer.innerHTML = data;
 
-    // Corrigir automaticamente os caminhos das imagens do cabeçalho
+     // Corrigir automaticamente os caminhos das imagens do cabeçalho
     headerContainer.querySelectorAll("img").forEach((img) => {
       const src = img.getAttribute("src");
 
@@ -96,8 +94,8 @@ fetch(headerPath)
 
     // Caminho para o index.html principal
     const currentUrl = new URL(window.location.href);
-    const pathParts = currentUrl.pathname.split("/");
-    const appPagePosition = pathParts.indexOf("app_page");
+    const pathParts = currentUrl.pathname.split('/');
+    const appPagePosition = pathParts.indexOf('app_page');
 
     if (appPagePosition !== -1) {
       pathParts.splice(appPagePosition);
@@ -105,19 +103,21 @@ fetch(headerPath)
       pathParts.pop();
     }
 
-    const rootPath = pathParts.join("/") + "/";
+    const rootPath = pathParts.join('/') + '/';
     const indexUrl = `${currentUrl.origin}${rootPath}index.html`;
 
     // Corrigir os links do cabeçalho
-    headerContainer.querySelectorAll("a").forEach((link) => {
-      const href = link.getAttribute("href");
+    headerContainer.querySelectorAll('a').forEach(link => {
+      const href = link.getAttribute('href');
 
       if (!href) return;
 
       const match = href.match(/^(?:\.\.\/)?index\.html(?:#(.*))?$/);
 
       if (match) {
-        link.href = match[1] ? `${indexUrl}#${match[1]}` : indexUrl;
+        link.href = match[1]
+          ? `${indexUrl}#${match[1]}`
+          : indexUrl;
       }
     });
 
@@ -127,8 +127,6 @@ fetch(headerPath)
   .catch(error => {
     console.error('Erro no carregamento do cabeçalho:', error);
   });
-
- 
 
   /* Reveal on scroll — troca opacity-0/translate-y-4 por opacity-100/translate-y-0 */
   const revealEls = document.querySelectorAll('.reveal');
@@ -150,73 +148,41 @@ fetch(headerPath)
     });
   }
 
-  /* Lazy-load do vídeo do YouTube: só carrega o iframe ao clicar */
+  /* Vídeos: validar o ID e carregar o player apenas após interação. */
   document.querySelectorAll('.video-wrap[data-youtube-id]').forEach(wrap => {
-    wrap.addEventListener('click', function handler() {
-      const videoId = wrap.getAttribute('data-youtube-id');
-      if (!videoId || videoId.startsWith('COLOCAR_')) return; // placeholder ainda não substituído
+    wrap.addEventListener('click', async function () {
+      if (wrap.querySelector('iframe')) return;
+      const videoId = (wrap.dataset.youtubeId || '').trim();
+      if (!/^[A-Za-z0-9_-]{11}$/.test(videoId)) return;
+
       const iframe = document.createElement('iframe');
-      iframe.src = `https://www.youtube-nocookie.com/embed/${videoId}?autoplay=1&rel=0`;
+      iframe.src = `https://www.youtube-nocookie.com/embed/${encodeURIComponent(videoId)}?autoplay=1&playsinline=1&rel=0`;
       iframe.title = 'Vídeo de demonstração';
-      iframe.className = 'w-full h-full';
+      iframe.className = 'absolute inset-0 w-full h-full';
+      iframe.loading = 'lazy';
+      iframe.referrerPolicy = 'strict-origin-when-cross-origin';
       iframe.allow = 'autoplay; encrypted-media; picture-in-picture';
       iframe.allowFullscreen = true;
-      wrap.innerHTML = '';
-      wrap.appendChild(iframe);
-      wrap.removeEventListener('click', handler);
-    });
+      iframe.setAttribute('sandbox', 'allow-scripts allow-same-origin allow-presentation');
+      wrap.replaceChildren(iframe);
+
+      try {
+        if (wrap.requestFullscreen) await wrap.requestFullscreen();
+        if (screen.orientation?.lock) {
+          const isShort = wrap.dataset.isShort === 'true';
+          await screen.orientation.lock(isShort ? 'portrait' : 'landscape').catch(() => {});
+        }
+      } catch (err) {
+        // Fullscreen/orientation are optional browser capabilities.
+      }
+    }, { once: true });
   });
 
-
-  document.querySelectorAll('.video-wrap').forEach(videoContainer => {
-  videoContainer.addEventListener('click', async function () {
-    const youtubeId = this.getAttribute('data-youtube-id');
-    const isShort = this.getAttribute('data-is-short') === 'true';
-
-    if (!youtubeId || this.querySelector('iframe')) return;
-
-    // 1. Injeta o iframe do YouTube com autoplay habilitado
-    this.innerHTML = `
-      <iframe 
-        class="w-full h-full absolute inset-0" 
-        src="https://www.youtube.com/embed/${youtubeId}?autoplay=1&playsinline=0&rel=0" 
-        title="YouTube video player" 
-        frameborder="0" 
-        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
-        allowfullscreen>
-      </iframe>
-    `;
-
-    // 2. Coloca o contêiner do vídeo em Tela Cheia (Fullscreen)
-    try {
-      if (this.requestFullscreen) {
-        await this.requestFullscreen();
-      } else if (this.webkitRequestFullscreen) { /* Safari / iOS */
-        await this.webkitRequestFullscreen();
-      }
-
-      // 3. Bloqueia a orientação do ecrã dependendo do tipo do vídeo
-      if (screen.orientation && screen.orientation.lock) {
-        if (isShort) {
-          // Se for Short, trava na Vertical
-          await screen.orientation.lock('portrait').catch(() => {});
-        } else {
-          // Se for Vídeo Normal, trava na Horizontal
-          await screen.orientation.lock('landscape').catch(() => {});
-        }
-      }
-    } catch (err) {
-      console.log("Modo fullscreen ou bloqueio de orientação não suportado neste navegador/dispositivo:", err);
+  document.addEventListener('fullscreenchange', () => {
+    if (!document.fullscreenElement && screen.orientation?.unlock) {
+      screen.orientation.unlock();
     }
   });
-});
-
-// Restaura a orientação automática quando o utilizador sai do Fullscreen
-document.addEventListener('fullscreenchange', () => {
-  if (!document.fullscreenElement && screen.orientation && screen.orientation.unlock) {
-    screen.orientation.unlock();
-  }
-});
 
   /* Formulário de contacto — envia por email via FormSubmit (sem backend próprio).
      FormSubmit.co entrega diretamente na caixa de entrada configurada no atributo
@@ -233,7 +199,8 @@ document.addEventListener('fullscreenchange', () => {
       const email = form.querySelector('#email').value.trim();
       const mensagem = form.querySelector('#mensagem').value.trim();
 
-      if (!nome || !email || !mensagem) {
+      if (!nome || !email || !mensagem || !form.checkValidity()) {
+        form.reportValidity();
         status.textContent = 'Por favor, preenche todos os campos.';
         status.className = 'form-status mt-3 text-sm text-danger';
         return;
@@ -245,13 +212,18 @@ document.addEventListener('fullscreenchange', () => {
       try {
         const response = await fetch(form.action, {
           method: 'POST',
-          headers: { 'Accept': 'application/json' },
-          body: new FormData(form),
+          headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(Object.fromEntries(new FormData(form).entries())),
         });
 
-        if (response.ok) {
+        const result = await response.json();
+        if (response.ok && (result?.success === 'true' || result?.success === true)) {
           status.textContent = 'Mensagem enviada! Vou responder assim que possível.';
           status.className = 'form-status mt-3 text-sm text-teal';
+          window.meugomesTrack?.('contact_form_submit', { form_name: 'contact' });
           form.reset();
         } else {
           throw new Error('Falha no envio');
@@ -335,7 +307,8 @@ document.addEventListener('DOMContentLoaded', async () => {
   form?.addEventListener('submit', async event => {
     event.preventDefault();
     status.textContent = '';
-    if (!emailInput.value.trim() || !emailInput.checkValidity() || !whatsappInput.value.trim()) {
+    if (!emailInput.value.trim() || !emailInput.checkValidity() || !whatsappInput.value.trim() || !form.checkValidity()) {
+      form.reportValidity();
       status.textContent = 'Confirma o email Google e o número de WhatsApp.';
       status.className = 'mt-3 min-h-5 text-center text-xs text-danger';
       (!emailInput.value.trim() || !emailInput.checkValidity() ? emailInput : whatsappInput).focus();
@@ -348,12 +321,19 @@ document.addEventListener('DOMContentLoaded', async () => {
     try {
       const result = await fetch(form.action, {
         method: 'POST',
-        headers: { Accept: 'application/json' },
-        body: new FormData(form),
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(Object.fromEntries(new FormData(form).entries())),
       });
-      if (!result.ok) throw new Error('Falha ao enviar o formulário.');
+      const payload = await result.json();
+      if (!result.ok || !(payload?.success === 'true' || payload?.success === true)) {
+        throw new Error('Falha ao enviar o formulário.');
+      }
       status.textContent = 'Pedido recebido! Entraremos em contacto quando o acesso estiver disponível.';
       status.className = 'mt-3 min-h-5 text-center text-xs text-[#65D6A3]';
+      window.meugomesTrack?.('test_signup', { app_name: appInput.value.trim() || 'Aplicação não identificada' });
       form.reset();
       window.setTimeout(closeModal, 2600);
     } catch (error) {
@@ -365,3 +345,200 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
   });
 });
+
+
+// ============================================================================
+ // MEUGOMES · Google Analytics 4 — consentimento prévio (modo básico)
+ // Não carrega a Google tag nem envia eventos antes da aceitação do visitante.
+ // Nunca enviar nomes, emails, telefones ou conteúdo dos formulários ao GA4.
+ // ============================================================================
+(() => {
+  const measurementId = (MEUGOMES_GA4_ID || '').trim();
+  const consentKey = 'meugomes_analytics_consent_v1';
+  const validMeasurementId = /^G-[A-Z0-9]+$/.test(measurementId) && measurementId !== 'G-XXXXXXXXXX';
+  let analyticsActive = false;
+  let tagLoaded = false;
+
+  window.dataLayer = window.dataLayer || [];
+  window.gtag = window.gtag || function () { window.dataLayer.push(arguments); };
+  window.gtag('consent', 'default', {
+    analytics_storage: 'denied',
+    ad_storage: 'denied',
+    ad_user_data: 'denied',
+    ad_personalization: 'denied',
+    functionality_storage: 'granted',
+    security_storage: 'granted'
+  });
+
+  const loadAnalytics = () => {
+    if (!validMeasurementId) return;
+    analyticsActive = true;
+    window.gtag('consent', 'update', {
+      analytics_storage: 'granted',
+      ad_storage: 'denied',
+      ad_user_data: 'denied',
+      ad_personalization: 'denied'
+    });
+    if (tagLoaded) return;
+    tagLoaded = true;
+    window.gtag('js', new Date());
+    window.gtag('config', measurementId, {
+      send_page_view: true,
+      allow_google_signals: false,
+      allow_ad_personalization_signals: false
+    });
+    if (window.location.pathname.includes('/app_page/')) {
+      const appName = document.querySelector('main h1')?.textContent?.trim()
+        || document.title.replace(/·\s*MEUGOMES/i, '').trim();
+      window.meugomesTrack('app_view', { app_name: appName });
+    }
+
+    const tag = document.createElement('script');
+    tag.async = true;
+    tag.src = `https://www.googletagmanager.com/gtag/js?id=${encodeURIComponent(measurementId)}`;
+    tag.onerror = () => {
+      analyticsActive = false;
+      tagLoaded = false;
+      console.error('[MEUGOMES Analytics] Não foi possível carregar a Google tag.');
+    };
+    document.head.appendChild(tag);
+  };
+
+  window.meugomesTrack = (eventName, parameters = {}) => {
+    if (!analyticsActive || typeof window.gtag !== 'function') return;
+    window.gtag('event', eventName, parameters);
+  };
+
+  const readConsent = () => {
+    try { return window.localStorage.getItem(consentKey); }
+    catch { return null; }
+  };
+  const saveConsent = value => {
+    try { window.localStorage.setItem(consentKey, value); }
+    catch { /* Se storage estiver indisponível, a escolha vale apenas nesta visita. */ }
+  };
+
+  const buildConsentUI = () => {
+    if (!document.body || document.getElementById('meugomes-consent-banner')) return;
+
+    const style = document.createElement('style');
+    style.textContent = `
+      #meugomes-consent-banner{position:fixed;z-index:9999;left:16px;right:16px;bottom:16px;max-width:760px;margin:auto;padding:20px;border:1px solid #29415e;border-radius:16px;background:#101b2a;color:#f4f7fb;box-shadow:0 16px 50px #0008;font:14px/1.55 system-ui,sans-serif}
+      #meugomes-consent-banner p{margin:0 0 12px;color:#c2ccda}
+      #meugomes-consent-banner a{color:#80b7ff;text-decoration:underline}
+      #meugomes-consent-banner .consent-actions{display:flex;flex-wrap:wrap;gap:9px}
+      #meugomes-consent-banner button,#meugomes-privacy-settings{min-height:42px;padding:9px 15px;border-radius:10px;border:1px solid #45617f;font:600 13px system-ui,sans-serif;cursor:pointer}
+      #meugomes-consent-banner button:focus-visible,#meugomes-privacy-settings:focus-visible{outline:3px solid #80b7ff;outline-offset:3px}
+      #meugomes-consent-accept{background:#056cf2;color:#fff;border-color:#056cf2}
+      #meugomes-consent-reject{background:#17283d;color:#fff}
+      #meugomes-privacy-settings{position:fixed;z-index:9998;right:12px;bottom:12px;background:#101b2a;color:#fff;box-shadow:0 4px 18px #0005}
+      @media(max-width:480px){#meugomes-consent-banner{left:10px;right:10px;bottom:10px;padding:16px}.consent-actions{display:grid;grid-template-columns:1fr}#meugomes-privacy-settings{right:8px;bottom:8px}}
+    `;
+    document.head.appendChild(style);
+
+    const banner = document.createElement('section');
+    banner.id = 'meugomes-consent-banner';
+    banner.hidden = Boolean(readConsent());
+    banner.setAttribute('role', 'dialog');
+    banner.setAttribute('aria-modal', 'false');
+    banner.setAttribute('aria-labelledby', 'meugomes-consent-title');
+
+    const title = document.createElement('strong');
+    title.id = 'meugomes-consent-title';
+    title.textContent = 'Privacidade e cookies';
+    const description = document.createElement('p');
+    description.textContent = 'Utilizamos o Google Analytics 4 apenas se autorizares, para compreender a utilização do site e melhorar as páginas. A escolha fica guardada neste navegador e podes alterá-la a qualquer momento.';
+    const policy = document.createElement('a');
+    const nestedPage = /\/(app_page|page_terms_privacy)\//.test(window.location.pathname);
+    policy.href = `${nestedPage ? '../' : ''}page_terms_privacy/politica-privacidade-site.html`;
+    policy.textContent = 'Consultar a política de privacidade';
+    policy.target = '_blank';
+    policy.rel = 'noopener noreferrer';
+    const actions = document.createElement('div');
+    actions.className = 'consent-actions';
+
+    const accept = document.createElement('button');
+    accept.id = 'meugomes-consent-accept';
+    accept.type = 'button';
+    accept.textContent = 'Aceitar análise';
+    const reject = document.createElement('button');
+    reject.id = 'meugomes-consent-reject';
+    reject.type = 'button';
+    reject.textContent = 'Rejeitar análise';
+    actions.append(accept, reject);
+    banner.append(title, description, policy, actions);
+    document.body.appendChild(banner);
+
+    const closeBanner = () => { banner.hidden = true; };
+    accept.addEventListener('click', () => {
+      saveConsent('accepted');
+      loadAnalytics();
+      closeBanner();
+    });
+    reject.addEventListener('click', () => {
+      saveConsent('rejected');
+      analyticsActive = false;
+      if (tagLoaded) {
+        window.gtag('consent', 'update', {
+          analytics_storage: 'denied',
+          ad_storage: 'denied',
+          ad_user_data: 'denied',
+          ad_personalization: 'denied'
+        });
+      }
+      closeBanner();
+    });
+
+    const settings = document.createElement('button');
+    settings.id = 'meugomes-privacy-settings';
+    settings.type = 'button';
+    settings.textContent = 'Privacidade';
+    settings.setAttribute('aria-label', 'Alterar preferências de privacidade');
+    settings.addEventListener('click', () => {
+      banner.hidden = false;
+      if (!banner.isConnected) document.body.appendChild(banner);
+      accept.focus();
+    });
+    document.body.appendChild(settings);
+  };
+
+  document.addEventListener('DOMContentLoaded', () => {
+    const choice = readConsent();
+    if (choice === 'accepted') loadAnalytics();
+    buildConsentUI();
+  });
+
+  // Instrumentação sem recolha de dados pessoais.
+  document.addEventListener('click', event => {
+    const target = event.target instanceof Element ? event.target : event.target?.parentElement;
+    if (!target) return;
+
+    const playButton = target.closest('.play-store-btn, #play-store-btn');
+    if (playButton) {
+      window.meugomesTrack('play_store_click', {
+        app_name: playButton.dataset.appName || document.querySelector('main h1')?.textContent?.trim() || 'Aplicação',
+        release_status: playButton.dataset.releaseStatus || 'unknown'
+      });
+      return;
+    }
+
+    const link = target.closest('a[href]');
+    if (!link) return;
+    let destination;
+    try { destination = new URL(link.href, window.location.href); } catch { return; }
+
+    if (destination.hostname === 'wa.me' || destination.hostname.endsWith('.whatsapp.com') || destination.hostname === 'whatsapp.com') {
+      window.meugomesTrack('whatsapp_click', { link_url: destination.origin + destination.pathname });
+      return;
+    }
+
+    const isApk = link.hasAttribute('download') || /\.apk$/i.test(destination.pathname) || link.classList.contains('apk-download');
+    if (isApk) {
+      window.meugomesTrack('apk_download', {
+        file_name: destination.pathname.split('/').pop() || 'ficheiro-apk',
+        app_name: document.querySelector('main h1')?.textContent?.trim() || 'Aplicação'
+      });
+    }
+  }, true);
+
+})();

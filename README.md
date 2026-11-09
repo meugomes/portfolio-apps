@@ -398,6 +398,56 @@ Caso uma determinada rede social não seja utilizada, o respetivo elemento pode 
 
 ---
 
+
+---
+
+## 🔐 Segurança, privacidade e Google Analytics 4
+
+### Google Analytics 4
+
+O site utiliza o Measurement ID configurado em `js/main.js`. A Google tag só é carregada depois de o visitante selecionar **“Aceitar análise”** no aviso de privacidade. Se selecionar **“Rejeitar análise”**, o GA4 não é carregado nem recebe eventos.
+
+A preferência fica guardada no `localStorage` do navegador. O visitante pode reabrir as preferências através do botão **“Privacidade”** no canto inferior do site.
+
+Eventos configurados:
+
+- `page_view` — visualização de página, após consentimento;
+- `app_view` — visualização de página de aplicação;
+- `play_store_click` — clique no botão Google Play;
+- `apk_download` — clique num download APK;
+- `whatsapp_click` — clique num link WhatsApp;
+- `test_signup` — submissão bem-sucedida do pedido de teste;
+- `contact_form_submit` — submissão bem-sucedida do contacto.
+
+**Nunca enviar para o GA4** nomes, emails, números de telefone ou conteúdo das mensagens. Os eventos de formulário indicam apenas que a submissão foi concluída, sem transportar os campos pessoais.
+
+Para validar a instalação:
+1. Publica o site e abre-o numa janela privada ou limpa a preferência `meugomes_analytics_consent_v1` do armazenamento local.
+2. Antes de aceitar, confirma nas ferramentas de rede do navegador que não é carregado `googletagmanager.com/gtag/js` nem são enviados pedidos analíticos.
+3. Seleciona “Aceitar análise” e confirma o carregamento da Google tag.
+4. No Google Analytics, abre **Relatórios → Tempo real** e verifica a visita e os eventos.
+5. Seleciona “Privacidade” → “Rejeitar análise” e confirma que os eventos deixam de ser enviados.
+
+A configuração de retenção de dados e as definições de privacidade da propriedade também devem ser revistas no painel administrativo do GA4. O código do site não substitui essas definições.
+
+### Formulários
+
+Os formulários usam FormSubmit. Os formulários utilizam o endpoint AJAX do FormSubmit (`https://formsubmit.co/ajax/...`). O reCAPTCHA padrão do FormSubmit permanece ativo e foi acrescentado um campo honeypot. A validação no navegador melhora a experiência, mas não substitui controlos do lado do servidor. O FormSubmit documenta mecanismos próprios de filtragem de spam; confirma a configuração do formulário e testa submissões legítimas e bloqueadas depois da publicação.
+
+### Segredos e ficheiros locais
+
+Não guardar no repositório:
+- ficheiros `.env` com credenciais;
+- chaves privadas, certificados ou keystores;
+- tokens de API, passwords ou credenciais de acesso;
+- backups e logs com dados pessoais.
+
+O Measurement ID `G-...` do GA4 é um identificador público e pode estar no JavaScript do site. Não é uma chave secreta.
+
+### Cabeçalhos HTTP de segurança
+
+Os cabeçalhos como `Content-Security-Policy`, `Strict-Transport-Security`, `X-Content-Type-Options`, `Referrer-Policy` e `Permissions-Policy` têm de ser configurados no alojamento/servidor. Não podem ser garantidos apenas por JavaScript ou HTML. A política CSP deve permitir, de forma restrita, a Google tag, FormSubmit e os players YouTube utilizados pelo site.
+
 ## 🔍 Checklist antes da publicação
 
 Antes de colocar o site em produção, confirme:
@@ -423,9 +473,18 @@ Antes de colocar o site em produção, confirme:
 
 ### Formulário
 
+- [ ] Proteção anti-spam FormSubmit ativa
+- [ ] Política de privacidade ligada junto aos formulários
 - [ ] Email de destino correto
 - [ ] Formulário testado
 - [ ] FormSubmit ativado
+
+### Segurança e análise
+
+- [ ] Consentimento GA4 testado (aceitar/rejeitar)
+- [ ] GA4 validado em Tempo real
+- [ ] Cabeçalhos HTTP de segurança configurados no alojamento
+- [ ] Nenhuma credencial ou chave privada no repositório ou histórico Git
 
 ### Qualidade
 
